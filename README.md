@@ -1,12 +1,12 @@
-# Caesar 后端项目文档
+# caesar-media 后端项目文档
 
-Caesar 是一个多模块的 Java 后端系统，聚焦于 **自媒体数据采集、实时直播监控与签名机制逆向实现**。系统以抖音直播数据为核心目标，采用模块化设计，便于功能拆分与拓展，支持从 WebSocket 消息监听到视频流录制的全流程处理。
+caesar-media 是一个多模块的 Java 后端系统，聚焦于 **自媒体数据采集、实时直播监控与签名机制逆向实现**。系统以抖音直播数据为核心目标，采用模块化设计，便于功能拆分与拓展，支持从 WebSocket 消息监听到视频流录制的全流程处理。
 
 ---
 
 ## 📌 项目概述
 
-- **项目名称**：caesar
+- **项目名称**：caesar-media
 - **项目类型**：Java 多模块应用
 - **应用场景**：自媒体数据采集、用户行为监听、WebSocket 消息解析、直播录制、系统探针监控等
 - **设计理念**：模块解耦、统一异常处理、结构化日志、可视化监控、支持逆向与协议解析
@@ -227,10 +227,10 @@ mvn clean install
 mvn clean package -DskipTests
 
 # 2. 进入 caesar-media 模块目录
-cd caesar-media
+cd caesar-media-web
 
 # 3. 构建 Docker 镜像（可自定义镜像名称）
-docker build -t caesar-media:latest .
+docker build -t caesar-media-web:latest .
 
 # 4. 使用 docker-compose 启动服务（后台运行）
 docker-compose up -d
@@ -246,18 +246,18 @@ docker-compose up -d
 
 > **开发者**：Tyrese  
 > **邮箱**：tyrese.guo@gmail.com  
-> **项目地址**：[GitHub](https://github.com/TyresePeng/caesar)
+> **项目地址**：[GitHub](https://github.com/TyresePeng/caesar-media)
 
 ### 🧑‍💻 微信交流群
 扫码添加开发者微信，备注 “Caesar”，邀请进交流群 👇
 <table>
   <tr>
     <td style="text-align:center;">
-      <img src="https://github.com/TyresePeng/caesar/blob/main/docs/chat.png" width="180"/><br/>
+      <img src="https://github.com/TyresePeng/caesar-media/blob/main/docs/chat.png" width="180"/><br/>
       <strong>微信群二维码</strong>
     </td>
     <td style="text-align:center; padding-left: 20px;">
-      <img src="https://github.com/TyresePeng/caesar/blob/main/docs/chat_tyrese.png" width="180"/><br/>
+      <img src="https://github.com/TyresePeng/caesar-media/blob/main/docs/chat_tyrese.png" width="180"/><br/>
       <strong>作者微信</strong>
     </td>
   </tr>
