@@ -9,12 +9,10 @@ import org.caesar.crawler.live.douyin.client.enums.SearchSortType;
 import org.caesar.crawler.live.douyin.codec.api.DouyinApis;
 import org.caesar.crawler.live.douyin.codec.room.DouyinRoomInitResult;
 import org.caesar.media.common.ApiResponse;
+import org.caesar.media.dto.LiveRecordParam;
 import org.caesar.media.service.DouyinService;
 import org.caesar.media.service.LiveRecordService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -97,12 +95,12 @@ public class DouyinController {
     /**
      * 直播录制
      *
-     * @param roomId 房间号
+     * @param liveRecordParam param
      */
-    @GetMapping("live-record")
-    public ApiResponse<Void> liveRecord(Long roomId,String streamUrl) {
+    @PostMapping("live-record")
+    public ApiResponse<Void> liveRecord(@RequestBody LiveRecordParam liveRecordParam) {
         try {
-            liveRecordService.startRecording(roomId,streamUrl);
+            liveRecordService.startRecording(liveRecordParam);
         } catch (Exception e) {
             return ApiResponse.fail(e.getMessage());
         }
@@ -112,11 +110,11 @@ public class DouyinController {
     /**
      * 停止直播录制
      *
-     * @param roomId 房间号
+     * @param liveRecordParam param
      */
-    @GetMapping("stop-live-record")
-    public ApiResponse<Void> stopLiveRecord(Long roomId) {
-        liveRecordService.stopRecording(roomId);
+    @PostMapping("stop-live-record")
+    public ApiResponse<Void> stopLiveRecord(@RequestBody LiveRecordParam liveRecordParam) {
+        liveRecordService.stopRecording(liveRecordParam);
         return ApiResponse.success();
     }
 
@@ -134,13 +132,12 @@ public class DouyinController {
     /**
      * 直播录制文件下载接口
      *
-     * @param roomId   直播间ID
      * @param response HttpServletResponse
      */
-    @GetMapping("/record/download/{roomId}")
-    public void downloadRecording(@PathVariable String roomId, HttpServletResponse response) {
+    @PostMapping("/record/download")
+    public void downloadRecording(@RequestBody LiveRecordParam liveRecordParam, HttpServletResponse response) {
         try {
-            liveRecordService.downloadRecordingToResponse(roomId, response);
+            liveRecordService.downloadRecordingToResponse(liveRecordParam, response);
         } catch (Exception e) {
             log.error("服务器内部错误:{}", e.getMessage(), e);
         }

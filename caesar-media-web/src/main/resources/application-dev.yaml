@@ -9,4 +9,4 @@ spring:
 
 live:
   record:
-    path: /Users/peng.guo/Documents/code/caesar-app/caesar/temp/
+    path: /Users/peng.guo/Documents/code/caesar-media/temp/
