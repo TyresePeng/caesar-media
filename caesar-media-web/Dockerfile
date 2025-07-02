@@ -22,7 +22,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 拷贝 Spring Boot 应用 JAR
-COPY target/caesar-media-web-0.0.1-SNAPSHOT.jar app.jar
+COPY target/caesar-media-web.jar app.jar
 
 #临时目录
 RUN mkdir -p /app/temp
