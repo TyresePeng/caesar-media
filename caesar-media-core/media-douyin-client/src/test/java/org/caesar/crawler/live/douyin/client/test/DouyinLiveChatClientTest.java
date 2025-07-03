@@ -1,11 +1,13 @@
 package org.caesar.crawler.live.douyin.client.test;
 
+import cn.hutool.json.JSONObject;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.UnknownFieldSet;
 import forward.ForwardMsgPlugin;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.caesar.crawler.live.douyin.client.client.DouyinClient;
 import org.caesar.crawler.live.douyin.client.client.DouyinLiveChatClient;
 import org.caesar.crawler.live.douyin.client.config.DouyinLiveChatClientConfig;
 import org.caesar.crawler.live.douyin.client.handler.DouyinBinaryFrameHandler;
@@ -16,6 +18,9 @@ import org.caesar.crawler.live.douyin.codec.msg.*;
 import org.caesar.crawler.live.douyin.codec.protobuf.GiftMessage;
 import org.caesar.crawler.live.douyin.codec.protobuf.Message;
 import org.caesar.crawler.live.douyin.codec.room.DouyinRoomInitResult;
+import org.caesar.crawler.live.netty.base.enums.PublishTimeType;
+import org.caesar.crawler.live.netty.base.enums.SearchChannelType;
+import org.caesar.crawler.live.netty.base.enums.SearchSortType;
 import org.caesar.crawler.live.netty.base.msg.ICmdMsg;
 import org.caesar.crawler.live.netty.base.msg.IMsg;
 import org.caesar.crawler.live.netty.client.enums.ClientStatusEnums;
@@ -33,6 +38,14 @@ class DouyinLiveChatClientTest {
     static Object lock = new Object();
     DouyinLiveChatClient client;
 
+
+
+    @Test
+    void queryKeyWord() throws InterruptedException {
+        JSONObject ret = DouyinClient.queryKeyWord("小黑子", 0,
+                20, PublishTimeType.UNLIMITED, SearchChannelType.GENERAL, SearchSortType.LATEST);
+        System.err.println( ret);
+    }
 
     @Test
     void roomInfo() throws InterruptedException {
