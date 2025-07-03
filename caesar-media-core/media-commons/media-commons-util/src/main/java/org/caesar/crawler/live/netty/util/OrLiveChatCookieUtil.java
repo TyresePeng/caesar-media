@@ -88,13 +88,22 @@ public class OrLiveChatCookieUtil {
         return sb.toString();
     }
 
+
     public static String getCookieByName(Map<String, String> cookieMap, String name, Supplier<String> supplier) {
         String str = MapUtil.getStr(cookieMap, name);
-        return str == null ? supplier.get() : str;
+        if (StrUtil.isNotBlank(str)) {
+            return str;
+        } else {
+            return supplier.get();
+        }
     }
 
     public static String getCookieByName(String cookie, String name, Supplier<String> supplier) {
         String str = MapUtil.getStr(parseCookieString(cookie), name);
-        return str == null ? supplier.get() : str;
+        if (StrUtil.isNotBlank(str)) {
+            return str;
+        } else {
+            return supplier.get();
+        }
     }
 }

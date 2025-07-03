@@ -1,6 +1,7 @@
 package org.caesar.media.browser.factory;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.Cookie;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.caesar.media.browser.function.ContextPageConsumer;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -275,4 +277,22 @@ public class PlaywrightFactory {
     }
 
 
+    /**
+     * 获取当前 Cookie
+     *
+     * @return Cookie 列表
+     */
+    public List<Cookie> getCookie() {
+        if (context == null) {
+            log.warn("无法获取 Cookie：BrowserContext 未初始化");
+            return null;
+        }
+        List<Cookie> cookies = context.cookies();
+        log.info("当前 Cookie 数量：{}", cookies.size());
+        for (Cookie cookie : cookies) {
+            log.info("Cookie => Name: {}, Value: {}, Domain: {}, Path: {}",
+                    cookie.name, cookie.value, cookie.domain, cookie.path);
+        }
+        return cookies;
+    }
 }
