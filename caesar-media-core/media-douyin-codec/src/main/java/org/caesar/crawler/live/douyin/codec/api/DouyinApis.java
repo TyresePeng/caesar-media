@@ -209,7 +209,7 @@ public class DouyinApis {
         Map<String, String> cookieMap = OrLiveChatCookieUtil.parseCookieString(cookie);
         String msToken = OrLiveChatCookieUtil.getCookieByName(cookieMap, KEY_COOKIE_MS_TOKEN, () -> RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH));
         // 构造请求参数
-        Map<String, String> queryParams = buildQueryKeyWordParams("女装", offset, count,
+        Map<String, String> queryParams = buildQueryKeyWordParams(keyword, offset, count,
                 publishTimeType, searchChannelType, searchSortType);
         // 获取浏览器 User-Agent
         // 构造请求头部
@@ -233,7 +233,7 @@ public class DouyinApis {
                                           SearchSortType searchSortType) {
         String msToken = RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH);
         // 构造请求参数
-        Map<String, String> queryParams = buildQueryKeyWordParams("女装", offset, count,
+        Map<String, String> queryParams = buildQueryKeyWordParams(keyword, offset, count,
                 publishTimeType, searchChannelType, searchSortType);
         // 获取浏览器 User-Agent
         // 构造请求头部
@@ -248,6 +248,7 @@ public class DouyinApis {
         }
         return new JSONObject(httpResponse.body());
     }
+
     /**
      * 构建抖音搜索请求参数
      *

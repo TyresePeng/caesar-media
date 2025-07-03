@@ -288,11 +288,6 @@ public class PlaywrightFactory {
             return null;
         }
         List<Cookie> cookies = context.cookies();
-        log.info("当前 Cookie 数量：{}", cookies.size());
-        for (Cookie cookie : cookies) {
-            log.info("Cookie => Name: {}, Value: {}, Domain: {}, Path: {}",
-                    cookie.name, cookie.value, cookie.domain, cookie.path);
-        }
         return cookies;
     }
 }
