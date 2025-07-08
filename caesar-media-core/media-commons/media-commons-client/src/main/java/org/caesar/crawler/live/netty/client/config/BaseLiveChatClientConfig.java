@@ -34,6 +34,7 @@ import org.caesar.crawler.live.netty.base.exception.BaseException;
 import org.caesar.crawler.live.netty.base.listener.IBaseMsgListener;
 import org.caesar.crawler.live.netty.client.IBaseLiveChatClient;
 import org.caesar.crawler.live.netty.util.OrLiveChatHttpUtil;
+import org.caesar.media.browser.factory.PlaywrightFactory;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -92,6 +93,11 @@ public abstract class BaseLiveChatClientConfig {
      * 直播间id
      */
     private Object roomId;
+
+    /**
+     * 操作浏览器实例
+     */
+    private PlaywrightFactory playwrightFactory;
 
     /**
      * 是否启用自动重连

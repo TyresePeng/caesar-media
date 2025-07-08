@@ -99,14 +99,13 @@ public class DouyinClient {
      * @param searchSortType    搜索结果排序类型枚举
      * @return 返回接口响应的 JSON 对象，查询失败返回 null
      */
-    public static JSONObject queryKeyWord(
-                                          String keyword,
+    public static JSONObject queryKeyWord(String keyword,
                                           int offset,
                                           int count,
                                           PublishTimeType publishTimeType,
                                           SearchChannelType searchChannelType,
                                           SearchSortType searchSortType) {
         // 在 Playwright 浏览器上下文中执行相关操作
-        return DouyinApis.queryKeyWord( keyword, offset, count, publishTimeType, searchChannelType, searchSortType);
+        return DouyinApis.queryKeyWord(null, keyword, offset, count, publishTimeType, searchChannelType, searchSortType);
     }
 }

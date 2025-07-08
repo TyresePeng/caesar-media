@@ -29,6 +29,8 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.Header;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.LoadState;
 import forward.ForwardMsgPlugin;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -55,6 +57,7 @@ import org.caesar.crawler.live.netty.client.base.BaseNettyClient;
 import org.caesar.crawler.live.netty.util.OrJavaScriptUtil;
 import org.caesar.crawler.live.netty.util.OrLiveChatCollUtil;
 import org.caesar.crawler.live.netty.util.OrLiveChatHttpUtil;
+import org.caesar.media.browser.factory.PlaywrightFactory;
 
 import javax.script.ScriptEngine;
 import java.io.InputStream;
@@ -72,10 +75,13 @@ import java.util.function.Consumer;
 public class DouyinLiveChatClient extends BaseNettyClient<DouyinLiveChatClientConfig, DouyinRoomInitResult, DouyinCmdEnum, IDouyinMsg, IDouyinMsgListener, DouyinConnectionHandler, DouyinBinaryFrameHandler> {
 
     public static String JS_SDK;
+    public static String STEALTH_SDK;
 
     static {
         InputStream resourceAsStream = DouyinLiveChatClient.class.getResourceAsStream("/js/douyin-webmssdk.js");
         JS_SDK = IoUtil.readUtf8(resourceAsStream);
+        InputStream resourceAsStreamStealth = DouyinLiveChatClient.class.getResourceAsStream("/js/stealth.min.js");
+        STEALTH_SDK = IoUtil.readUtf8(resourceAsStreamStealth);
     }
 
     public DouyinLiveChatClient(DouyinLiveChatClientConfig config, List<IDouyinMsgListener> msgListeners, IDouyinConnectionListener connectionListener, EventLoopGroup workerGroup) {
@@ -144,6 +150,19 @@ public class DouyinLiveChatClient extends BaseNettyClient<DouyinLiveChatClientCo
     }
 
     @Override
+    public void send(Object msg) {
+        DouyinRoomInitResult result = this.getRoomInitResult();
+        long realRoomId = result.getRealRoomId();
+        PlaywrightFactory playwrightFactory = this.getConfig().getPlaywrightFactory();
+        playwrightFactory.doWithContext(ctx->{
+            ctx.addInitScript(STEALTH_SDK);
+            Page page = ctx.newPage();
+            page.navigate("https://live.douyin.com/"+realRoomId);
+            page.waitForLoadState(LoadState.DOMCONTENTLOADED);
+        });
+    }
+
+    @Override
     protected String getWebSocketUriString() {
         String webSocketUriString = super.getWebSocketUriString();
         if (StrUtil.isBlank(webSocketUriString)) {
@@ -201,10 +220,6 @@ public class DouyinLiveChatClient extends BaseNettyClient<DouyinLiveChatClientCo
         queryParams.put("heartbeatDuration ", "0");
         queryParams.put("signature", getSignature(getConfig().getUserAgent(), roomInitResult.getRealRoomId(), roomInitResult.getUserUniqueId()));
         return webSocketUriString + "?" + OrLiveChatHttpUtil.toParams(queryParams);
-    }
-
-    public void sendDanmu(Object danmu, Runnable success, Consumer<Throwable> failed) {
-        super.sendDanmu(danmu, success, failed);
     }
 
     @SneakyThrows

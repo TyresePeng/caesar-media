@@ -21,10 +21,6 @@
     <dependencies>
         <dependency>
             <groupId>org.caesar.crawler</groupId>
-            <artifactId>media-browser</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.caesar.crawler</groupId>
             <artifactId>media-douyin-codec</artifactId>
         </dependency>
 

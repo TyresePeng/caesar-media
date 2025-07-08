@@ -1,18 +1,19 @@
 package org.caesar.crawler.live.douyin.codec.build;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.caesar.crawler.live.netty.base.enums.PublishTimeType;
+import org.caesar.crawler.live.netty.base.enums.SearchChannelType;
+import org.caesar.crawler.live.netty.base.enums.SearchSortType;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * @Description: 抖音参数构建
@@ -24,7 +25,10 @@ import java.util.StringJoiner;
 public class DouyinParamBuild {
 
     public static String JS_SDK;
-
+    // 抖音主页地址（
+    private static final String DOUYIN_URL = "https://www.douyin.com/?recommend=1";
+    // 固定来源组 ID
+    private static final String FROM_GROUP_ID = "7378810571505847586";
     static {
         InputStream resourceAsStream = DouyinParamBuild.class.getResourceAsStream("/js/douyin.js");
         JS_SDK = IoUtil.readUtf8(resourceAsStream);
@@ -33,6 +37,64 @@ public class DouyinParamBuild {
     private static final String AID = "6383";
     private static final Random RANDOM = new Random();
 
+    /**
+     * 构建抖音搜索请求参数
+     *
+     * @param keyword           查询关键词
+     * @param offset            分页偏移
+     * @param count             请求条数
+     * @param publishTimeType   发布时间过滤类型
+     * @param searchChannelType 搜索渠道类型
+     * @param searchSortType    搜索排序类型
+     * @return 构造好的查询参数 Map
+     */
+    public static Map<String, String> buildQueryKeyWordParams(String keyword,
+                                                               int offset,
+                                                               int count,
+                                                               PublishTimeType publishTimeType,
+                                                               SearchChannelType searchChannelType,
+                                                               SearchSortType searchSortType) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("search_channel", searchChannelType.getValue());
+        queryParams.put("enable_history", "1");
+        queryParams.put("keyword", keyword);
+        queryParams.put("search_source", "switch_tab");
+        queryParams.put("query_correct_type", "1");
+        // 固定使用 1
+        queryParams.put("is_filter_search", "1");
+        queryParams.put("from_group_id", FROM_GROUP_ID);
+        queryParams.put("offset", String.valueOf(offset));
+        queryParams.put("count", String.valueOf(count));
+        queryParams.put("need_filter_settings", "0");
+        // 固定示例，可改为动态
+        queryParams.put("search_id", "2025061210580105A538BD0C0AA8FDF79B");
+
+        // 构建 filter_selected 字段（嵌套 JSON 字符串）
+        JSONObject filterSelected = new JSONObject();
+        filterSelected.put("sort_type", searchSortType.getValue());
+        filterSelected.put("publish_time", publishTimeType.getValue());
+        queryParams.put("filter_selected", filterSelected.toString());
+
+        return queryParams;
+    }
+
+    /**
+     * 构建抖音请求头
+     *
+     * @param userAgent 浏览器 User-Agent
+     * @param cookieStr Cookie 字符串
+     * @return 构造好的请求头 Map
+     */
+    public static Map<String, String> buildDouYinHeaders(String userAgent, String cookieStr) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", userAgent);
+        headers.put("Cookie", cookieStr);
+        headers.put("Host", "www.douyin.com");
+        headers.put("Origin", DOUYIN_URL);
+        headers.put("Referer", DOUYIN_URL);
+        headers.put("Content-Type", "application/json;charset=UTF-8");
+        return headers;
+    }
     /**
      * UUID 模拟生成（抖音前端实现方式）
      */

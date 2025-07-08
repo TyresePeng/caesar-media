@@ -198,7 +198,17 @@ public class DouyinApis {
         return (int) giftCount;
     }
 
-
+    /**
+     * 搜索关键词
+     *
+     * @param cookie            cookie
+     * @param keyword           关键词
+     * @param offset            搜索偏移
+     * @param count             搜索数量
+     * @param publishTimeType   发布时间类型
+     * @param searchChannelType 搜索渠道类型
+     * @param searchSortType    搜索排序类型
+     */
     public static JSONObject queryKeyWord(String cookie,
                                           String keyword,
                                           int offset,
@@ -209,11 +219,11 @@ public class DouyinApis {
         Map<String, String> cookieMap = OrLiveChatCookieUtil.parseCookieString(cookie);
         String msToken = OrLiveChatCookieUtil.getCookieByName(cookieMap, KEY_COOKIE_MS_TOKEN, () -> RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH));
         // 构造请求参数
-        Map<String, String> queryParams = buildQueryKeyWordParams(keyword, offset, count,
+        Map<String, String> queryParams = DouyinParamBuild.buildQueryKeyWordParams(keyword, offset, count,
                 publishTimeType, searchChannelType, searchSortType);
         // 获取浏览器 User-Agent
         // 构造请求头部
-        Map<String, String> headers = buildDouYinHeaders(USER_AGENT, cookie);
+        Map<String, String> headers = DouyinParamBuild.buildDouYinHeaders(USER_AGENT, cookie);
 
         String uri = "/aweme/v1/web/general/search/single/";
         // 获取完整请求参数，包含签名参数 a_bogus
@@ -223,88 +233,5 @@ public class DouyinApis {
             throw new BaseException("关键字查询,查询" + keyword + "失败");
         }
         return new JSONObject(httpResponse.body());
-    }
-
-    public static JSONObject queryKeyWord(String keyword,
-                                          int offset,
-                                          int count,
-                                          PublishTimeType publishTimeType,
-                                          SearchChannelType searchChannelType,
-                                          SearchSortType searchSortType) {
-        String msToken = RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH);
-        // 构造请求参数
-        Map<String, String> queryParams = buildQueryKeyWordParams(keyword, offset, count,
-                publishTimeType, searchChannelType, searchSortType);
-        // 获取浏览器 User-Agent
-        // 构造请求头部
-        Map<String, String> headers = buildDouYinHeaders(USER_AGENT, null);
-
-        String uri = "/aweme/v1/web/general/search/single/";
-        // 获取完整请求参数，包含签名参数 a_bogus
-        Map<String, Object> commonParams = DouyinParamBuild.getCommonParams(queryParams, uri, msToken, USER_AGENT);
-        HttpResponse httpResponse = OrLiveChatHttpUtil.doGet("https://www.douyin.com" + uri, commonParams, headers);
-        if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
-            throw new BaseException("关键字查询,查询" + keyword + "失败");
-        }
-        return new JSONObject(httpResponse.body());
-    }
-
-    /**
-     * 构建抖音搜索请求参数
-     *
-     * @param keyword           查询关键词
-     * @param offset            分页偏移
-     * @param count             请求条数
-     * @param publishTimeType   发布时间过滤类型
-     * @param searchChannelType 搜索渠道类型
-     * @param searchSortType    搜索排序类型
-     * @return 构造好的查询参数 Map
-     */
-    private static Map<String, String> buildQueryKeyWordParams(String keyword,
-                                                               int offset,
-                                                               int count,
-                                                               PublishTimeType publishTimeType,
-                                                               SearchChannelType searchChannelType,
-                                                               SearchSortType searchSortType) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("search_channel", searchChannelType.getValue());
-        queryParams.put("enable_history", "1");
-        queryParams.put("keyword", keyword);
-        queryParams.put("search_source", "switch_tab");
-        queryParams.put("query_correct_type", "1");
-        // 固定使用 1
-        queryParams.put("is_filter_search", "1");
-        queryParams.put("from_group_id", FROM_GROUP_ID);
-        queryParams.put("offset", String.valueOf(offset));
-        queryParams.put("count", String.valueOf(count));
-        queryParams.put("need_filter_settings", "0");
-        // 固定示例，可改为动态
-        queryParams.put("search_id", "2025061210580105A538BD0C0AA8FDF79B");
-
-        // 构建 filter_selected 字段（嵌套 JSON 字符串）
-        JSONObject filterSelected = new JSONObject();
-        filterSelected.put("sort_type", searchSortType.getValue());
-        filterSelected.put("publish_time", publishTimeType.getValue());
-        queryParams.put("filter_selected", filterSelected.toString());
-
-        return queryParams;
-    }
-
-    /**
-     * 构建抖音请求头
-     *
-     * @param userAgent 浏览器 User-Agent
-     * @param cookieStr Cookie 字符串
-     * @return 构造好的请求头 Map
-     */
-    private static Map<String, String> buildDouYinHeaders(String userAgent, String cookieStr) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", userAgent);
-        headers.put("Cookie", cookieStr);
-        headers.put("Host", "www.douyin.com");
-        headers.put("Origin", DOUYIN_URL);
-        headers.put("Referer", DOUYIN_URL);
-        headers.put("Content-Type", "application/json;charset=UTF-8");
-        return headers;
     }
 }

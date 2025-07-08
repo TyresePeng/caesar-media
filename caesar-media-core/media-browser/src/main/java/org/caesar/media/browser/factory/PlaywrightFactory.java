@@ -12,10 +12,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.options.SameSiteAttribute;
 /**
  * @Description: Playwright 工厂
  * @Author: peng.guo
@@ -34,21 +38,78 @@ public class PlaywrightFactory {
 
     /**
      * -- GETTER --
-     *  获取 Playwright 实例id
+     * 获取 Playwright 实例id
+     *
      * @return Playwright 实例id
      */
     @Getter
-    private Long playwrightId=0L;
+    private Long playwrightId = 0L;
 
     @Getter
     private String storageStateJson;
 
+
+    /**
+     * 通过 cookie 字符串初始化 Playwright，上下文中注入 Cookie。
+     *
+     * @param headless    是否无头模式
+     * @param cookieString 格式如 "key1=value1; key2=value2"
+     * @param domain      Cookie 所属的域名，必填
+     */
+    public void initWithCookieString(boolean headless, String cookieString, String domain) {
+        try {
+            playwright = Playwright.create();
+            browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(headless));
+            context = browser.newContext();
+            // 解析 cookie 字符串
+            List<Cookie> cookies = parseCookieString(cookieString, domain);
+            if (!cookies.isEmpty()) {
+                context.addCookies(cookies);
+                log.info("注入 Cookies: {}", cookies);
+            }
+            log.info("Playwright 带 Cookie 初始化完成");
+        } catch (Exception e) {
+            log.error("Playwright 带 Cookie 初始化失败", e);
+        }
+    }
+
+    /**
+     * 将 Cookie 字符串解析成 Playwright Cookie 对象列表
+     *
+     * @param cookieString cookie 字符串
+     * @param domain       cookie 所属域名
+     * @return List<Cookie>
+     */
+    private List<Cookie> parseCookieString(String cookieString, String domain) {
+        List<Cookie> cookieList = new ArrayList<>();
+        if (cookieString == null || cookieString.trim().isEmpty()) {
+            return cookieList;
+        }
+        String[] pairs = cookieString.split(";");
+        for (String pair : pairs) {
+            String[] kv = pair.trim().split("=", 2);
+            if (kv.length == 2) {
+                String name = kv[0].trim();
+                String value = kv[1].trim();
+                if (!name.isEmpty()) {
+                    Cookie cookie = new Cookie(name, value);
+                    cookie.setDomain(domain);
+                    // 通常设置为根路径
+                    cookie.setPath("/");
+                    // 你可以根据需要设置 expires、httpOnly、secure 等字段
+                    cookieList.add(cookie);
+                }
+            }
+        }
+        return cookieList;
+    }
     /**
      * 带 StorageState 的初始化
-     * @param headless           是否无头模式
-     * @param storageStateJson   StorageState JSON 字符串
+     *
+     * @param headless         是否无头模式
+     * @param storageStateJson StorageState JSON 字符串
      */
-    public void initWithStorageStateJson(boolean headless,  String storageStateJson,Long playwrightId) {
+    public void initWithStorageStateJson(boolean headless, String storageStateJson, Long playwrightId) {
         try {
             this.playwrightId = playwrightId;
             this.storageStateJson = storageStateJson;
@@ -69,10 +130,11 @@ public class PlaywrightFactory {
 
     /**
      * 带 StorageState 的初始化
-     * @param headless           是否无头模式
-     * @param enableTracing       是否启用 Tracing
-     * @param tracingPath        Tracing 保存路径（可为 null 使用默认值 trace.zip）
-     * @param storageStateJson   StorageState JSON
+     *
+     * @param headless         是否无头模式
+     * @param enableTracing    是否启用 Tracing
+     * @param tracingPath      Tracing 保存路径（可为 null 使用默认值 trace.zip）
+     * @param storageStateJson StorageState JSON
      */
     public void initWithStorageStateJson(boolean headless, boolean enableTracing, String tracingPath, String storageStateJson) {
         try {
@@ -92,12 +154,13 @@ public class PlaywrightFactory {
 
     /**
      * 初始化 Playwright，支持 Tracing 和 StorageState 的加载与保存
-     * @param tracingPath        Tracing 保存路径（可为 null 使用默认值 trace.zip）
-     * @param headless           是否无头模式
-     * @param enableTracing      是否启用 Tracing
+     *
+     * @param tracingPath   Tracing 保存路径（可为 null 使用默认值 trace.zip）
+     * @param headless      是否无头模式
+     * @param enableTracing 是否启用 Tracing
      */
-    public void init(boolean headless, boolean enableTracing,String tracingPath) {
-      this.init(headless, enableTracing, tracingPath, false, null);
+    public void init(boolean headless, boolean enableTracing, String tracingPath) {
+        this.init(headless, enableTracing, tracingPath, false, null);
     }
 
     /**
@@ -213,7 +276,7 @@ public class PlaywrightFactory {
      * 支持返回值的 Context 操作封装
      *
      * @param contextFunction 有返回值的操作函数
-     * @param <T> 返回类型
+     * @param <T>             返回类型
      * @return 操作结果
      */
     public <T> T doWithContext(Function<BrowserContext, T> contextFunction) {
@@ -239,6 +302,7 @@ public class PlaywrightFactory {
             }
         }
     }
+
     public <T> T doWithContextAndPage(ContextPageFunction<T> function) throws Exception {
         Page page = null;
         try {

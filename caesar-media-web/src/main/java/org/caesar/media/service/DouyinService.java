@@ -6,6 +6,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.UnknownFieldSet;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.caesar.crawler.live.douyin.client.browser.DouyinLiveChatBrowser;
 import org.caesar.crawler.live.douyin.client.client.DouyinClient;
 import org.caesar.crawler.live.douyin.client.client.DouyinLiveChatClient;
 import org.caesar.crawler.live.douyin.client.config.DouyinLiveChatClientConfig;
@@ -175,5 +176,17 @@ public class DouyinService {
         } catch (Exception e) {
             log.error("检查会话失败: {}", e.getMessage(), e);
         }
+    }
+
+    /**
+     * 发送弹幕
+     * @param roomId 直播间id
+     * @param msg 信息id
+     */
+    public void sendMsg(Long roomId, String msg) {
+        PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+        DouyinLiveChatBrowser.sendMsg(playwrightFactory,roomId, msg);
+        playwrightFactoryPool.release(playwrightFactory);
+        System.err.println("suc");
     }
 }

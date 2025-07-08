@@ -20,6 +20,11 @@
     <dependencies>
         <dependency>
             <groupId>org.caesar.crawler</groupId>
+            <artifactId>media-browser</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.caesar.crawler</groupId>
             <artifactId>media-commons-base</artifactId>
         </dependency>
 

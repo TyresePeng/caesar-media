@@ -82,6 +82,18 @@ public class DouyinController {
     }
 
     /**
+     * 发送消息
+     *
+     * @param roomId 房间号
+     * @param msg 消息
+     */
+    @GetMapping("send-msg")
+    public ApiResponse<Void> sendMsg(Long roomId,String msg) {
+        douyinService.sendMsg(roomId,msg);
+        return ApiResponse.success();
+    }
+
+    /**
      * 断开直播间
      *
      * @param roomId 房间号
