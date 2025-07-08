@@ -10,6 +10,7 @@ import org.caesar.crawler.live.netty.base.enums.SearchChannelType;
 import org.caesar.crawler.live.netty.base.enums.SearchSortType;
 import org.caesar.media.common.ApiResponse;
 import org.caesar.media.dto.LiveRecordParam;
+import org.caesar.media.dto.LiveSendMsgParam;
 import org.caesar.media.service.DouyinService;
 import org.caesar.media.service.LiveRecordService;
 import org.springframework.web.bind.annotation.*;
@@ -84,12 +85,11 @@ public class DouyinController {
     /**
      * 发送消息
      *
-     * @param roomId 房间号
-     * @param msg 消息
+     * @param param LiveSendMsgParam 发送消息
      */
-    @GetMapping("send-msg")
-    public ApiResponse<Void> sendMsg(Long roomId,String msg) {
-        douyinService.sendMsg(roomId,msg);
+    @PostMapping("send-msg")
+    public ApiResponse<Void> sendMsg(@RequestBody LiveSendMsgParam param) {
+        douyinService.sendMsg(param.getRoomId(),param.getUserId(),param.getMsg());
         return ApiResponse.success();
     }
 

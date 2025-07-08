@@ -59,7 +59,8 @@ public class LiveRecordService {
         String key = this.getKey(liveRecordParam);
 
         if (taskMap.containsKey(key)) {
-            throw new IllegalStateException("该直播间正在录制中");
+            log.warn("该直播间正在录制中：roomId:{},key:{}", roomId,key);
+            return;
         }
         if (streamUrl == null || streamUrl.isEmpty()) {
             throw new MediaException("直播间无有效拉流地址");

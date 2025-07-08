@@ -183,10 +183,11 @@ public class DouyinService {
      * @param roomId 直播间id
      * @param msg 信息id
      */
-    public void sendMsg(Long roomId, String msg) {
-        PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
-        DouyinLiveChatBrowser.sendMsg(playwrightFactory,roomId, msg);
-        playwrightFactoryPool.release(playwrightFactory);
-        System.err.println("suc");
+    public void sendMsg(Long roomId, Long userId,String msg) {
+        if (userId!=null){
+            playwrightFactoryPool.withFactoryById(userId, factory -> DouyinLiveChatBrowser.sendMsg(factory,roomId, msg));
+        }else {
+            playwrightFactoryPool.withFactory(factory -> {DouyinLiveChatBrowser.sendMsg(factory,roomId, msg);});
+        }
     }
 }
