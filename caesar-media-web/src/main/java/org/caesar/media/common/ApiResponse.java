@@ -79,6 +79,18 @@ public class ApiResponse<T>{
         response.setMessage(msg);
         return response;
     }
+
+    /**
+     * 响应失败 带错误码和描述
+     * @param code 错误码
+     * @param msg 错误描述
+     */
+    public static ApiResponse<Void> fail(String code, String msg) {
+        ApiResponse<Void> response = new ApiResponse();
+        response.setCode(Integer.parseInt(code));
+        response.setMessage(msg);
+        return response;
+    }
     /**
      * 响应失败
      */

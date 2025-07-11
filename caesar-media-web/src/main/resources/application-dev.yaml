@@ -10,3 +10,11 @@ spring:
 live:
   record:
     path: /Users/peng.guo/Documents/code/caesar-media/temp/
+    ffmpeg-path: ffmpeg
+    max-concurrent-records: 10
+    max-record-duration: 3600
+    reconnect-delay-max: 5
+    rw-timeout: 10000000
+    buffer-size: 8192
+    auto-cleanup: true
+    retention-days: 7

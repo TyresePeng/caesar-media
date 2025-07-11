@@ -2,6 +2,9 @@ package org.caesar.media.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @Description: 发送消息入参
  * @Author: peng.guo
@@ -13,10 +16,13 @@ public class LiveSendMsgParam {
     /**
      * 直播间id
      */
-   private Long roomId;
-   /**
+    @NotNull(message = "直播间ID不能为空")
+    private Long roomId;
+
+    /**
      * 消息
      */
+    @NotBlank(message = "消息内容不能为空")
     private String msg;
 
     /**
