@@ -18,3 +18,33 @@ live:
     buffer-size: 8192
     auto-cleanup: true
     retention-days: 7
+
+# AI弹幕配置（针对电商带货优化）
+ai:
+  danmu:
+    enabled: true
+    max-concurrent-users: 20
+    base-interval: 30
+    min-random-seconds: 1
+    max-random-seconds: 8
+    api:
+      url: https://api.openai.com/v1/chat/completions
+      api-key: ${AI_API_KEY:}
+      model: gpt-3.5-turbo
+      max-tokens: 30
+      temperature: 0.8
+      timeout: 10000
+      retry-count: 2
+    content-filter:
+      enabled: true
+      sensitive-words: 
+        - admin
+        - 管理员
+        - 机器人
+        - 广告
+        - 微商
+        - 刷单
+      max-length: 25
+      min-length: 2
+      filter-duplicate: true
+      duplicate-check-count: 15

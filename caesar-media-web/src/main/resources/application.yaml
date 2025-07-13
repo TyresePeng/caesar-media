@@ -71,3 +71,28 @@ dy-account-session-check:
 cron-refresh-job:
   #  30秒钟执行一次
   cron:  0/30 * * * * ?
+
+# AI弹幕配置
+ai:
+  danmu:
+    enabled: true
+    api:
+      # 智谱AI配置
+      api-key: 7d01fe379e2d4592a32abf1596900ff0.qemgh4GRk0JD3c6f
+      url: https://open.bigmodel.cn/api/paas/v4/chat/completions
+      model: glm-4-flash
+      max-tokens: 50
+      temperature: 0.8
+      timeout: 30000
+    # 内容过滤配置
+    content-filter:
+      max-length: 20
+      sensitive-words:
+        - 广告
+        - 推广
+        - 加微信
+    # 默认配置
+    default-config:
+      random-seconds: 30
+      ai-personality: 热情的观众
+      room-description: 电商直播间

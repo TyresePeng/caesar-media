@@ -265,6 +265,11 @@
                 <version>${spring-boot.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-webflux</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
             <!-- region Graaljs -->
 <!--            <dependency>-->
 <!--                <groupId>org.graalvm.polyglot</groupId>-->
@@ -410,6 +415,14 @@
                 <id>central2</id>
                 <name>central2</name>
                 <url>https://repo1.maven.org/maven2/</url>
+            </repository>
+            <repository>
+                <id>spring-milestones</id>
+                <name>Spring Milestones</name>
+                <url>https://repo.spring.io/milestone</url>
+                <snapshots>
+                    <enabled>false</enabled>
+                </snapshots>
             </repository>
             <repository>
                 <id>github</id>
