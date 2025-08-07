@@ -108,6 +108,37 @@ public class RouteVo {
         liveRoom.setChildren(Collections.singletonList(liveRoomDash));
         list.add(liveRoom);
 
+        // 一级菜单：多直播间管理
+        MenuVo multiLiveRoom = new MenuVo();
+        multiLiveRoom.setPath("/multi-live-rooms");
+        multiLiveRoom.setComponent("Layout");
+        multiLiveRoom.setRedirect("/multi-live-rooms/management");
+        multiLiveRoom.setName("multi-live-rooms");
+
+        MetaVo multiLiveRoomMeta = new MetaVo();
+        multiLiveRoomMeta.setTitle("多直播间管理");
+        multiLiveRoomMeta.setIcon("live_room");
+        multiLiveRoomMeta.setHidden(false);
+        multiLiveRoomMeta.setAlwaysShow(false);
+        multiLiveRoomMeta.setParams(null);
+        multiLiveRoom.setMeta(multiLiveRoomMeta);
+
+        MenuVo multiLiveRoomDash = new MenuVo();
+        multiLiveRoomDash.setPath("management");
+        multiLiveRoomDash.setComponent("multi-live-rooms/index");
+        multiLiveRoomDash.setName("multi-live-rooms-management");
+
+        MetaVo multiLiveRoomDashMeta = new MetaVo();
+        multiLiveRoomDashMeta.setTitle("多直播间管理");
+        multiLiveRoomDashMeta.setIcon("live_room");
+        multiLiveRoomDashMeta.setHidden(false);
+        multiLiveRoomDashMeta.setAlwaysShow(false);
+        multiLiveRoomDashMeta.setKeepAlive(true);
+        multiLiveRoomDash.setMeta(multiLiveRoomDashMeta);
+
+        multiLiveRoom.setChildren(Collections.singletonList(multiLiveRoomDash));
+        list.add(multiLiveRoom);
+
         return list;
     }
 

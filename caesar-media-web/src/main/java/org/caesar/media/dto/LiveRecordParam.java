@@ -18,7 +18,7 @@ public class LiveRecordParam {
      */
     @NotBlank(message = "房间ID不能为空")
     private String roomId;
-    
+
     /**
      * 录制流地址
      */
@@ -30,6 +30,6 @@ public class LiveRecordParam {
      * 录制质量
      */
     @NotBlank(message = "录制质量不能为空")
-    @Pattern(regexp = "^(HD|SD|UHD)\\d*$", message = "录制质量格式不正确")
+//    @Pattern(regexp = "^(HD|SD|UHD)\\d*$", message = "录制质量格式不正确")
     private String quality;
 }
