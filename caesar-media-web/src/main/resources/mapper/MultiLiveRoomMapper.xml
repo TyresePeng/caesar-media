@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.caesar.media.mapper.MultiLiveRoomMapper">
+
+    <!-- 批量更新监听状态 -->
+    <update id="batchUpdateMonitoringStatus">
+        UPDATE multi_live_room
+        SET is_monitoring = #{isMonitoring},
+            last_active_time = NOW(),
+            update_time = NOW()
+        WHERE id IN
+        <foreach collection="roomIds" item="roomId" open="(" close=")" separator=",">
+            #{roomId}
+        </foreach>
+        AND user_id = #{userId}
+        AND deleted = 0
+    </update>
+
+    <!-- 更新最后活跃时间 -->
+    <update id="updateLastActiveTime">
+        UPDATE multi_live_room
+        SET last_active_time = #{lastActiveTime},
+            update_time = NOW()
+        WHERE id = #{roomId}
+          AND user_id = #{userId}
+          AND deleted = 0
+    </update>
+
+    <!-- 清理不活跃的房间 -->
+    <delete id="cleanupInactiveRooms">
+        UPDATE multi_live_room
+        SET deleted = 1,
+            update_time = NOW()
+        WHERE last_active_time &lt; #{beforeTime}
+          AND user_id = #{userId}
+          AND deleted = 0
+    </delete>
+
+    <!-- 获取用户房间列表 -->
+    <select id="getUserRooms" resultType="org.caesar.media.entity.MultiLiveRoom">
+        SELECT *
+        FROM multi_live_room
+        WHERE user_id = #{userId}
+          AND deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND (display_name LIKE CONCAT('%', #{keyword}, '%')
+                 OR room_input LIKE CONCAT('%', #{keyword}, '%')
+                 OR room_title LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="isMonitoring != null">
+            AND is_monitoring = #{isMonitoring}
+        </if>
+        <if test="isLoaded != null">
+            AND is_loaded = #{isLoaded}
+        </if>
+        ORDER BY sort_order DESC, last_active_time DESC
+    </select>
+
+</mapper>

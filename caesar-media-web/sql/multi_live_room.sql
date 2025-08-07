@@ -1,0 +1,27 @@
+-- 多直播间管理表
+CREATE TABLE `multi_live_room` (
+    `id` VARCHAR(32) NOT NULL COMMENT '主键ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户ID',
+    `room_input` VARCHAR(200) NOT NULL COMMENT '房间输入（链接或ID）',
+    `display_name` VARCHAR(50) NOT NULL COMMENT '显示名称',
+    `room_title` VARCHAR(200) DEFAULT NULL COMMENT '房间标题',
+    `room_status` VARCHAR(50) DEFAULT NULL COMMENT '房间状态',
+    `is_loaded` TINYINT(1) DEFAULT 0 COMMENT '是否已加载',
+    `is_monitoring` TINYINT(1) DEFAULT 0 COMMENT '是否正在监听',
+    `unread_count` INT DEFAULT 0 COMMENT '未读消息数',
+    `stream_urls` TEXT DEFAULT NULL COMMENT '流地址映射(JSON格式)',
+    `recording_status` TEXT DEFAULT NULL COMMENT '录制状态映射(JSON格式)',
+    `ai_danmu_enabled` TINYINT(1) DEFAULT 0 COMMENT 'AI弹幕是否启用',
+    `sort_order` INT DEFAULT 0 COMMENT '排序权重',
+    `remark` VARCHAR(200) DEFAULT NULL COMMENT '备注',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `last_active_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后活跃时间',
+    `deleted` TINYINT(1) DEFAULT 0 COMMENT '是否删除',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_room_input` (`room_input`),
+    KEY `idx_last_active_time` (`last_active_time`),
+    KEY `idx_create_time` (`create_time`),
+    UNIQUE KEY `uk_user_room` (`user_id`, `room_input`, `deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='多直播间管理表';
