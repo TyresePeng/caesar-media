@@ -108,4 +108,190 @@ public class DouyinClient {
         // 在 Playwright 浏览器上下文中执行相关操作
         return DouyinApis.queryKeyWord(null, keyword, offset, count, publishTimeType, searchChannelType, searchSortType);
     }
+
+    /**
+     * 获取用户视频帖子（使用PlaywrightFactory）
+     *
+     * @param factory    PlaywrightFactory 实例
+     * @param secUserId  用户的sec_user_id
+     * @param maxCursor  分页游标，首次请求传0
+     * @param count      每页数量，默认10
+     * @return 用户视频列表响应
+     */
+    public static JSONObject getAwemePost(PlaywrightFactory factory, String secUserId, long maxCursor, int count) {
+        List<Cookie> cookie = factory.getCookie();
+        return DouyinApis.getAwemePost(RequestParametersUtils.convertCookiesToString(cookie), secUserId, maxCursor, count);
+    }
+
+    /**
+     * 获取用户视频帖子（使用Cookie字符串）
+     *
+     * @param cookie     Cookie 字符串
+     * @param secUserId  用户的sec_user_id
+     * @param maxCursor  分页游标，首次请求传0
+     * @param count      每页数量，默认10
+     * @return 用户视频列表响应
+     */
+    public static JSONObject getAwemePost(String cookie, String secUserId, long maxCursor, int count) {
+        return DouyinApis.getAwemePost(cookie, secUserId, maxCursor, count);
+    }
+
+    /**
+     * 获取用户视频帖子（无Cookie，可能受限）
+     *
+     * @param secUserId  用户的sec_user_id
+     * @param maxCursor  分页游标，首次请求传0
+     * @param count      每页数量，默认10
+     * @return 用户视频列表响应
+     */
+    public static JSONObject getAwemePost(String secUserId, long maxCursor, int count) {
+        return DouyinApis.getAwemePost(null, secUserId, maxCursor, count);
+    }
+
+    /**
+     * 获取视频详情（使用PlaywrightFactory）
+     *
+     * @param factory PlaywrightFactory 实例
+     * @param awemeId 视频ID
+     * @return 视频详情响应
+     */
+    public static JSONObject getAwemeDetail(PlaywrightFactory factory, String awemeId) {
+        List<Cookie> cookie = factory.getCookie();
+        return DouyinApis.getAwemeDetail(RequestParametersUtils.convertCookiesToString(cookie), awemeId);
+    }
+
+    /**
+     * 获取视频详情（使用Cookie字符串）
+     *
+     * @param cookie  Cookie 字符串
+     * @param awemeId 视频ID
+     * @return 视频详情响应
+     */
+    public static JSONObject getAwemeDetail(String cookie, String awemeId) {
+        return DouyinApis.getAwemeDetail(cookie, awemeId);
+    }
+
+    /**
+     * 获取视频详情（无Cookie，可能受限）
+     *
+     * @param awemeId 视频ID
+     * @return 视频详情响应
+     */
+    public static JSONObject getAwemeDetail(String awemeId) {
+        return DouyinApis.getAwemeDetail(null, awemeId);
+    }
+
+    /**
+     * 获取评论列表（使用PlaywrightFactory）
+     *
+     * @param factory PlaywrightFactory 实例
+     * @param awemeId 视频ID
+     * @param cursor  分页游标，首次请求传0
+     * @param count   每页数量，默认20
+     * @return 评论列表响应
+     */
+    public static JSONObject getCommentList(PlaywrightFactory factory, String awemeId, long cursor, int count) {
+        List<Cookie> cookie = factory.getCookie();
+        return DouyinApis.getCommentList(RequestParametersUtils.convertCookiesToString(cookie), awemeId, cursor, count);
+    }
+
+    /**
+     * 获取评论列表（使用Cookie字符串）
+     *
+     * @param cookie  Cookie 字符串
+     * @param awemeId 视频ID
+     * @param cursor  分页游标，首次请求传0
+     * @param count   每页数量，默认20
+     * @return 评论列表响应
+     */
+    public static JSONObject getCommentList(String cookie, String awemeId, long cursor, int count) {
+        return DouyinApis.getCommentList(cookie, awemeId, cursor, count);
+    }
+
+    /**
+     * 获取评论列表（无Cookie，可能受限）
+     *
+     * @param awemeId 视频ID
+     * @param cursor  分页游标，首次请求传0
+     * @param count   每页数量，默认20
+     * @return 评论列表响应
+     */
+    public static JSONObject getCommentList(String awemeId, long cursor, int count) {
+        return DouyinApis.getCommentList(null, awemeId, cursor, count);
+    }
+
+    /**
+     * 获取评论回复（使用PlaywrightFactory）
+     *
+     * @param factory   PlaywrightFactory 实例
+     * @param awemeId   视频ID
+     * @param commentId 评论ID
+     * @param cursor    分页游标，首次请求传0
+     * @param count     每页数量，默认20
+     * @return 评论回复响应
+     */
+    public static JSONObject getCommentReply(PlaywrightFactory factory, String awemeId, String commentId, long cursor, int count) {
+        List<Cookie> cookie = factory.getCookie();
+        return DouyinApis.getCommentReply(RequestParametersUtils.convertCookiesToString(cookie), awemeId, commentId, cursor, count);
+    }
+
+    /**
+     * 获取评论回复（使用Cookie字符串）
+     *
+     * @param cookie    Cookie 字符串
+     * @param awemeId   视频ID
+     * @param commentId 评论ID
+     * @param cursor    分页游标，首次请求传0
+     * @param count     每页数量，默认20
+     * @return 评论回复响应
+     */
+    public static JSONObject getCommentReply(String cookie, String awemeId, String commentId, long cursor, int count) {
+        return DouyinApis.getCommentReply(cookie, awemeId, commentId, cursor, count);
+    }
+
+    /**
+     * 获取评论回复（无Cookie，可能受限）
+     *
+     * @param awemeId   视频ID
+     * @param commentId 评论ID
+     * @param cursor    分页游标，首次请求传0
+     * @param count     每页数量，默认20
+     * @return 评论回复响应
+     */
+    public static JSONObject getCommentReply(String awemeId, String commentId, long cursor, int count) {
+        return DouyinApis.getCommentReply(null, awemeId, commentId, cursor, count);
+    }
+
+    /**
+     * 获取用户信息（使用PlaywrightFactory）
+     *
+     * @param factory   PlaywrightFactory 实例
+     * @param secUserId 用户的sec_user_id
+     * @return 用户信息响应
+     */
+    public static JSONObject getUserProfile(PlaywrightFactory factory, String secUserId) {
+        List<Cookie> cookie = factory.getCookie();
+        return DouyinApis.getUserProfile(RequestParametersUtils.convertCookiesToString(cookie), secUserId);
+    }
+
+    /**
+     * 获取用户信息（使用Cookie字符串）
+     *
+     * @param cookie    Cookie 字符串
+     * @param secUserId 用户的sec_user_id
+     * @return 用户信息响应
+     */
+    public static JSONObject getUserProfile(String cookie, String secUserId) {
+        return DouyinApis.getUserProfile(cookie, secUserId);
+    }
+
+    /**
+     * 获取用户信息（无Cookie，可能受限）
+     *
+     * @param secUserId 用户的sec_user_id
+     * @return 用户信息响应
+     */
+    public static JSONObject getUserProfile(String secUserId) {
+        return DouyinApis.getUserProfile(null, secUserId);
+    }
 }

@@ -234,4 +234,147 @@ public class DouyinApis {
         }
         return new JSONObject(httpResponse.body());
     }
+
+    /**
+     * 获取用户视频帖子
+     *
+     * @param cookie    Cookie 字符串
+     * @param secUserId 用户的sec_user_id
+     * @param maxCursor 分页游标，首次请求传0
+     * @param count     每页数量，默认10
+     * @return 用户视频列表响应
+     */
+    public static JSONObject getAwemePost(String cookie, String secUserId, long maxCursor, int count) {
+        Map<String, String> cookieMap = OrLiveChatCookieUtil.parseCookieString(cookie);
+        String msToken = OrLiveChatCookieUtil.getCookieByName(cookieMap, KEY_COOKIE_MS_TOKEN, () -> RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH));
+
+        // 构造请求参数
+        Map<String, String> queryParams = DouyinParamBuild.buildAwemePostParams(secUserId, maxCursor, count);
+
+        // 构造请求头部
+        Map<String, String> headers = DouyinParamBuild.buildDouYinHeaders(USER_AGENT, cookie);
+
+        String uri = "/aweme/v1/web/aweme/post/";
+        // 获取完整请求参数，包含签名参数 a_bogus
+        Map<String, Object> commonParams = DouyinParamBuild.getCommonParams(queryParams, uri, msToken, USER_AGENT);
+        HttpResponse httpResponse = OrLiveChatHttpUtil.doGet("https://www.douyin.com" + uri, commonParams, headers);
+        if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
+            throw new BaseException("获取用户视频帖子失败，用户ID: " + secUserId);
+        }
+        return new JSONObject(httpResponse.body());
+    }
+
+    /**
+     * 获取视频详情
+     *
+     * @param cookie  Cookie 字符串
+     * @param awemeId 视频ID
+     * @return 视频详情响应
+     */
+    public static JSONObject getAwemeDetail(String cookie, String awemeId) {
+        Map<String, String> cookieMap = OrLiveChatCookieUtil.parseCookieString(cookie);
+        String msToken = OrLiveChatCookieUtil.getCookieByName(cookieMap, KEY_COOKIE_MS_TOKEN, () -> RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH));
+        System.err.println(msToken);
+        Map<String, String> queryParams = DouyinParamBuild.buildAwemeDetailParams(awemeId);
+
+        // 从Cookie中提取UIFID并添加到查询参数中（浏览器抓包显示有这个参数）
+
+        // 构造请求头部 - 移除Origin头
+        Map<String, String> headers = DouyinParamBuild.buildDouYinHeaders(USER_AGENT, cookie);
+        headers.remove("Origin");
+        String uri = "/aweme/v1/web/aweme/detail/";
+        // 获取完整请求参数，包含签名参数 a_bogus
+        Map<String, Object> commonParams = DouyinParamBuild.getCommonParams(queryParams, uri, msToken, USER_AGENT);
+        HttpResponse httpResponse = OrLiveChatHttpUtil.doGet("https://www.douyin.com" + uri, commonParams, headers);
+        if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
+            throw new BaseException("获取视频详情失败，视频ID: " + awemeId);
+        }
+        return new JSONObject(httpResponse.body());
+    }
+
+    /**
+     * 获取评论列表
+     *
+     * @param cookie  Cookie 字符串
+     * @param awemeId 视频ID
+     * @param cursor  分页游标，首次请求传0
+     * @param count   每页数量，默认20
+     * @return 评论列表响应
+     */
+    public static JSONObject getCommentList(String cookie, String awemeId, long cursor, int count) {
+        Map<String, String> cookieMap = OrLiveChatCookieUtil.parseCookieString(cookie);
+        String msToken = OrLiveChatCookieUtil.getCookieByName(cookieMap, KEY_COOKIE_MS_TOKEN, () -> RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH));
+
+        // 构造请求参数
+        Map<String, String> queryParams = DouyinParamBuild.buildCommentListParams(awemeId, cursor, count);
+
+        // 构造请求头部
+        Map<String, String> headers = DouyinParamBuild.buildDouYinHeaders(USER_AGENT, cookie);
+
+        String uri = "/aweme/v1/web/comment/list/";
+        // 获取完整请求参数，包含签名参数 a_bogus
+        Map<String, Object> commonParams = DouyinParamBuild.getCommonParams(queryParams, uri, msToken, USER_AGENT);
+        HttpResponse httpResponse = OrLiveChatHttpUtil.doGet("https://www.douyin.com" + uri, commonParams, headers);
+        if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
+            throw new BaseException("获取评论列表失败，视频ID: " + awemeId);
+        }
+        return new JSONObject(httpResponse.body());
+    }
+
+    /**
+     * 获取评论回复
+     *
+     * @param cookie    Cookie 字符串
+     * @param awemeId   视频ID
+     * @param commentId 评论ID
+     * @param cursor    分页游标，首次请求传0
+     * @param count     每页数量，默认20
+     * @return 评论回复响应
+     */
+    public static JSONObject getCommentReply(String cookie, String awemeId, String commentId, long cursor, int count) {
+        Map<String, String> cookieMap = OrLiveChatCookieUtil.parseCookieString(cookie);
+        String msToken = OrLiveChatCookieUtil.getCookieByName(cookieMap, KEY_COOKIE_MS_TOKEN, () -> RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH));
+
+        // 构造请求参数
+        Map<String, String> queryParams = DouyinParamBuild.buildCommentReplyParams(awemeId, commentId, cursor, count);
+
+        // 构造请求头部
+        Map<String, String> headers = DouyinParamBuild.buildDouYinHeaders(USER_AGENT, cookie);
+
+        String uri = "/aweme/v1/web/comment/list/reply/";
+        // 获取完整请求参数，包含签名参数 a_bogus
+        Map<String, Object> commonParams = DouyinParamBuild.getCommonParams(queryParams, uri, msToken, USER_AGENT);
+        HttpResponse httpResponse = OrLiveChatHttpUtil.doGet("https://www.douyin.com" + uri, commonParams, headers);
+        if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
+            throw new BaseException("获取评论回复失败，评论ID: " + commentId);
+        }
+        return new JSONObject(httpResponse.body());
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param cookie    Cookie 字符串
+     * @param secUserId 用户的sec_user_id
+     * @return 用户信息响应
+     */
+    public static JSONObject getUserProfile(String cookie, String secUserId) {
+        Map<String, String> cookieMap = OrLiveChatCookieUtil.parseCookieString(cookie);
+        String msToken = OrLiveChatCookieUtil.getCookieByName(cookieMap, KEY_COOKIE_MS_TOKEN, () -> RandomUtil.randomString(MS_TOKEN_BASE_STRING, MS_TOKEN_LENGTH));
+
+        // 构造请求参数
+        Map<String, String> queryParams = DouyinParamBuild.buildUserProfileParams(secUserId);
+
+        // 构造请求头部
+        Map<String, String> headers = DouyinParamBuild.buildDouYinHeaders(USER_AGENT, cookie);
+
+        String uri = "/aweme/v1/web/user/profile/other/";
+        // 获取完整请求参数，包含签名参数 a_bogus
+        Map<String, Object> commonParams = DouyinParamBuild.getCommonParams(queryParams, uri, msToken, USER_AGENT);
+        HttpResponse httpResponse = OrLiveChatHttpUtil.doGet("https://www.douyin.com" + uri, commonParams, headers);
+        if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
+            throw new BaseException("获取用户信息失败，用户ID: " + secUserId);
+        }
+        return new JSONObject(httpResponse.body());
+    }
 }

@@ -79,6 +79,91 @@ public class DouyinParamBuild {
     }
 
     /**
+     * 构建抖音用户视频帖子请求参数
+     *
+     * @param secUserId 用户的sec_user_id
+     * @param maxCursor 分页游标，首次请求传0或空字符串
+     * @param count     每页数量，默认18
+     * @return 构造好的查询参数 Map
+     */
+    public static Map<String, String> buildAwemePostParams(String secUserId, long maxCursor, int count) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("sec_user_id", secUserId);
+        queryParams.put("count", String.valueOf(count));
+        queryParams.put("max_cursor", String.valueOf(maxCursor));
+        queryParams.put("locate_query", "false");
+        queryParams.put("publish_video_strategy_type", "2");
+        return queryParams;
+    }
+
+    /**
+     * 构建抖音视频详情请求参数
+     *
+     * @param awemeId 视频ID
+     * @return 构造好的查询参数 Map
+     */
+    public static Map<String, String> buildAwemeDetailParams(String awemeId) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("aweme_id", awemeId);
+        queryParams.put("cursor", "0");
+        queryParams.put("count", "20");
+        queryParams.put("item_type", "0");
+        return queryParams;
+    }
+
+    /**
+     * 构建抖音评论列表请求参数
+     *
+     * @param awemeId   视频ID
+     * @param cursor    分页游标，首次请求传0
+     * @param count     每页数量，默认20
+     * @return 构造好的查询参数 Map
+     */
+    public static Map<String, String> buildCommentListParams(String awemeId, long cursor, int count) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("aweme_id", awemeId);
+        queryParams.put("cursor", String.valueOf(cursor));
+        queryParams.put("count", String.valueOf(count));
+        queryParams.put("item_type", "0");
+        queryParams.put("rcFT", "");
+        queryParams.put("insert_ids", "");
+        return queryParams;
+    }
+
+    /**
+     * 构建抖音评论回复请求参数
+     *
+     * @param awemeId   视频ID
+     * @param commentId 评论ID
+     * @param cursor    分页游标，首次请求传0
+     * @param count     每页数量，默认20
+     * @return 构造好的查询参数 Map
+     */
+    public static Map<String, String> buildCommentReplyParams(String awemeId, String commentId, long cursor, int count) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("aweme_id", awemeId);
+        queryParams.put("comment_id", commentId);
+        queryParams.put("cursor", String.valueOf(cursor));
+        queryParams.put("count", String.valueOf(count));
+        queryParams.put("item_type", "0");
+        return queryParams;
+    }
+
+    /**
+     * 构建抖音用户信息请求参数
+     *
+     * @param secUserId 用户的sec_user_id
+     * @return 构造好的查询参数 Map
+     */
+    public static Map<String, String> buildUserProfileParams(String secUserId) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("sec_user_id", secUserId);
+        queryParams.put("from_tab_name", "main");
+        queryParams.put("publish_video_strategy_type", "2");
+        return queryParams;
+    }
+
+    /**
      * 构建抖音请求头
      *
      * @param userAgent 浏览器 User-Agent
@@ -93,6 +178,12 @@ public class DouyinParamBuild {
         headers.put("Origin", DOUYIN_URL);
         headers.put("Referer", DOUYIN_URL);
         headers.put("Content-Type", "application/json;charset=UTF-8");
+        // 添加其他必要头部
+        headers.put("accept", "application/json, text/plain, */*");
+        headers.put("accept-language", "zh-CN,zh;q=0.9");
+        headers.put("sec-fetch-dest", "empty");
+        headers.put("sec-fetch-mode", "cors");
+        headers.put("sec-fetch-site", "same-site");
         return headers;
     }
     /**
@@ -133,24 +224,36 @@ public class DouyinParamBuild {
 
     private static Map<String, Object> buildBaseParams() {
         Map<String, Object> params = new LinkedHashMap<>();
+        params.put("device_platform", "webapp");
         params.put("aid", AID);
-        params.put("app_name", "douyin_web");
-        params.put("device_platform", "web");
+        params.put("channel", "channel_pc_web");
+        params.put("version_code", "190600");
+        params.put("version_name", "19.6.0");
+        params.put("update_version_code", "170400");
+        params.put("pc_client_type", "1");
+//        params.put("app_name", "douyin_web");
         params.put("cookie_enabled", "true");
         params.put("browser_language", "zh-CN");
         params.put("browser_platform", "MacIntel");
         params.put("browser_name", "Chrome");
-        params.put("browser_version", "136.0.0.0");
-        params.put("screen_width", "1440");
-        params.put("screen_height", "900");
+        params.put("browser_version", "125.0.0.0");
+        params.put("browser_online", "true");
+        params.put("engine_name", "Blink");
+        params.put("engine_version", "109.0");
+        params.put("os_name", "Mac OS");
+        params.put("os_version", "10.15.7");
+        params.put("cpu_core_num", "8");
+        params.put("device_memory", "8");
+        params.put("platform", "PC");
+        params.put("screen_width", "2560");
+        params.put("screen_height", "1440");
+        params.put("effective_type", "4g");
+        params.put("round_trip_time", "50");
         return params;
     }
 
     public static Map<String, Object> getCommonParams(Map<String, String> param, String uri, String xmst, String userAgent) {
         Map<String, Object> params = buildBaseParams();
-        params.put("language", "zh-CN");
-        params.put("enter_from", "link_share");
-        params.put("is_need_double_stream", "false");
         params.put("webid", getWebId());
         params.put("msToken", xmst);
 
@@ -158,9 +261,9 @@ public class DouyinParamBuild {
             params.putAll(param);
         }
         String queryString = buildQueryString(params);
+        log.debug("Query String: {}", queryString);
         String a_bogus = getABogusFromJS(uri, queryString, userAgent);
         params.put("a_bogus", a_bogus);
-
         return params;
     }
 

@@ -147,7 +147,7 @@ public class DouyinService {
      * 会话有效则释放 PlaywrightFactory 资源供下次复用。
      * </p>
      */
-    @Scheduled(cron = "${dy-account-session-check.cron}")
+//    @Scheduled(cron = "${dy-account-session-check.cron}")
     public void checkSession() {
         PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
         if (playwrightFactory == null) {
@@ -188,6 +188,183 @@ public class DouyinService {
             playwrightFactoryPool.withFactoryById(userId, factory -> DouyinLiveChatBrowser.sendMsg(factory,roomId, msg));
         }else {
             playwrightFactoryPool.withFactory(factory -> {DouyinLiveChatBrowser.sendMsg(factory,roomId, msg);});
+        }
+    }
+
+    /**
+     * 获取抖音用户视频帖子
+     *
+     * @param secUserId 用户的sec_user_id
+     * @param maxCursor 分页游标，首次请求传0
+     * @param count     每页数量，默认10
+     * @param userId    指定用户ID，可选
+     * @return 用户视频列表
+     */
+    @Retryable(
+            value = Exception.class,
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 500, multiplier = 3)
+    )
+    public JSONObject getAwemePost(String secUserId, Long maxCursor, Integer count, Long userId) {
+        if (userId != null) {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getAwemePost(playwrightFactory, secUserId, maxCursor, count);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        } else {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getAwemePost(playwrightFactory, secUserId, maxCursor, count);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        }
+    }
+
+    /**
+     * 获取抖音视频详情
+     *
+     * @param awemeId 视频ID
+     * @param userId  指定用户ID，可选
+     * @return 视频详情
+     */
+    @Retryable(
+            value = Exception.class,
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 500, multiplier = 3)
+    )
+    public JSONObject getAwemeDetail(String awemeId, Long userId) {
+        if (userId != null) {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getAwemeDetail(playwrightFactory, awemeId);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        } else {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getAwemeDetail(playwrightFactory, awemeId);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        }
+    }
+
+    /**
+     * 获取抖音评论列表
+     *
+     * @param awemeId 视频ID
+     * @param cursor  分页游标，首次请求传0
+     * @param count   每页数量，默认20
+     * @param userId  指定用户ID，可选
+     * @return 评论列表
+     */
+    @Retryable(
+            value = Exception.class,
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 500, multiplier = 3)
+    )
+    public JSONObject getCommentList(String awemeId, Long cursor, Integer count, Long userId) {
+        if (userId != null) {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getCommentList(playwrightFactory, awemeId, cursor, count);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        } else {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getCommentList(playwrightFactory, awemeId, cursor, count);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        }
+    }
+
+    /**
+     * 获取抖音评论回复
+     *
+     * @param awemeId   视频ID
+     * @param commentId 评论ID
+     * @param cursor    分页游标，首次请求传0
+     * @param count     每页数量，默认20
+     * @param userId    指定用户ID，可选
+     * @return 评论回复
+     */
+    @Retryable(
+            value = Exception.class,
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 500, multiplier = 3)
+    )
+    public JSONObject getCommentReply(String awemeId, String commentId, Long cursor, Integer count, Long userId) {
+        if (userId != null) {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getCommentReply(playwrightFactory, awemeId, commentId, cursor, count);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        } else {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getCommentReply(playwrightFactory, awemeId, commentId, cursor, count);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        }
+    }
+
+    /**
+     * 获取抖音用户信息
+     *
+     * @param secUserId 用户的sec_user_id
+     * @param userId    指定用户ID，可选
+     * @return 用户信息
+     */
+    @Retryable(
+            value = Exception.class,
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 500, multiplier = 3)
+    )
+    public JSONObject getUserProfile(String secUserId, Long userId) {
+        if (userId != null) {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getUserProfile(playwrightFactory, secUserId);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
+        } else {
+            PlaywrightFactory playwrightFactory = playwrightFactoryPool.acquire();
+            JSONObject resp;
+            try {
+                resp = DouyinClient.getUserProfile(playwrightFactory, secUserId);
+            } finally {
+                playwrightFactoryPool.release(playwrightFactory);
+            }
+            return resp;
         }
     }
 }
